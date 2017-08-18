@@ -3,14 +3,31 @@ import './App.css';
 
 class App extends Component {
   constructor(props) {
-    super(props);
-    this.grids = [["1/3","1/3"],["4/4","1/3"],["1/2","3/5"]];
+    super(props)
+    this.grids = []
+    // = [["1/3","1/3"],["4/4","1/3"],["1/2","3/5"]];
+    this.state={newGrid:[]}
+  }
+  addToGrid(col, row){
+    this.grids.push([col,row])
+  }
+  onGridClick(){
+    // %4 for column
+    // /4 Math.floor for row
+    // delet standard gridblocks from array?
   }
   render() {
     let standardGridBlocks = [];
     for (var i = 0; i < 100; i++) {standardGridBlocks.push(<StandardGridBlock key={i} index={i} />)}
     let createdGrids = [];
-    this.grids.map((val,i) => createdGrids.push(<CreatedGridBlock key={i} col={val[0]} row={val[1]}/>))
+    this.grids.map((val,i) => createdGrids.push(
+                                            <CreatedGridBlock 
+                                              key={i} 
+                                              col={val[0]} 
+                                              row={val[1]}
+                                              addToGrid={this.addToGrid.bind(this)}
+                                              onClick={this.onGridClick.bind(this)}
+                                            />))
     return (
       <div className="container">
         {createdGrids}
