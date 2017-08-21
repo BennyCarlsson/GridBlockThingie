@@ -4,34 +4,39 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.grids = []
+    this.grids = [["2/2","1/3"]]
     // = [["1/3","1/3"],["4/4","1/3"],["1/2","3/5"]];
-    this.state={newGrid:[]}
+    this.state={newGrid:[],standardGridBlocks:[]}
+    
   }
   addToGrid(col, row){
     this.grids.push([col,row])
   }
-  onGridClick(){
+  onGridClick(col,row){
     // %4 for column
     // /4 Math.floor for row
     // delet standard gridblocks from array?
   }
+  componentWillMount(){
+    var arr = []
+    for (var i = 0; i < 100; i++) {
+      arr.push(<StandardGridBlock key={i} index={i} 
+        addToGrid={this.addToGrid.bind(this)}
+        onClick={this.onGridClick.bind(this)}/>)
+    }
+    this.setState({standardGridBlocks:arr})
+  }
   render() {
-    let standardGridBlocks = [];
-    for (var i = 0; i < 100; i++) {standardGridBlocks.push(<StandardGridBlock key={i} index={i} />)}
     let createdGrids = [];
     this.grids.map((val,i) => createdGrids.push(
-                                            <CreatedGridBlock 
-                                              key={i} 
-                                              col={val[0]} 
-                                              row={val[1]}
-                                              addToGrid={this.addToGrid.bind(this)}
-                                              onClick={this.onGridClick.bind(this)}
-                                            />))
+      <CreatedGridBlock 
+        key={i} col={val[0]} row={val[1]}
+        addToGrid={this.addToGrid.bind(this)} onClick={this.onGridClick.bind(this)}
+      />))
     return (
       <div className="container">
         {createdGrids}
-        {standardGridBlocks}
+        {this.state.standardGridBlocks}
       </div>
     )
   }
@@ -48,8 +53,19 @@ class CreatedGridBlock extends Component{
   }
 }
 class StandardGridBlock extends Component{
+  constructor(props){
+    super(props)
+    this.arr= [[],[]];
+  }
   onClick(e){
-    console.log(this.props.index)
+    if(!this.arr[0][0]){
+      this.arr[0][0] = this.props.index
+    }else if(!this.arr[1][0]){
+      this.arr[1][0] = this.props.index
+      console.log(this.arr) 
+    }else{
+      
+    }
   }
   render(){
     return(
