@@ -4,15 +4,31 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.grids = [["2/2","1/3"]]
+    this.grids = []//[["2/2","2/4"]]
     // = [["1/3","1/3"],["4/4","1/3"],["1/2","3/5"]];
     this.state={newGrid:[],standardGridBlocks:[]}
+    this.gridIndexArray= [[],[]];
     
   }
   addToGrid(col, row){
     this.grids.push([col,row])
   }
-  onGridClick(col,row){
+  onGridClick(index){
+    index++
+    console.log(index)
+    if(!this.gridIndexArray[0][0]){
+      this.gridIndexArray[0][0] = index
+    }else if(!this.gridIndexArray[1][0] && this.gridIndexArray[0][0] !== index){
+      this.gridIndexArray[1][0] = index
+      let col =  [[this.gridIndexArray[0][0]%4],[this.gridIndexArray[1][0]%4]] 
+      if(col[0][0] === 0){col[0][0] = 4}
+      if(col[1][0] === 0){col[1][0] = 4}
+      console.log(col)
+
+      let row = [[Math.floor(this.gridIndexArray[0][0]/2)],[Math.floor(this.gridIndexArray[1][0]/2)]]
+      console.log(row)
+      this.gridIndexArray = [[],[]]
+    }
     // %4 for column
     // /4 Math.floor for row
     // delet standard gridblocks from array?
@@ -53,23 +69,9 @@ class CreatedGridBlock extends Component{
   }
 }
 class StandardGridBlock extends Component{
-  constructor(props){
-    super(props)
-    this.arr= [[],[]];
-  }
-  onClick(e){
-    if(!this.arr[0][0]){
-      this.arr[0][0] = this.props.index
-    }else if(!this.arr[1][0]){
-      this.arr[1][0] = this.props.index
-      console.log(this.arr) 
-    }else{
-      
-    }
-  }
   render(){
     return(
-      <div className={"gridBlock standardGridBlock item"+this.props.index} onClick={this.onClick.bind(this)}></div>
+      <div className={"gridBlock standardGridBlock item"+this.props.index} onClick={() => this.props.onClick(this.props.index)}></div>
     )
   }
 }
