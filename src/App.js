@@ -4,14 +4,22 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props)
-    this.grids = []//[["2/2","2/4"]]
-    // = [["1/3","1/3"],["4/4","1/3"],["1/2","3/5"]];
-    this.state={newGrid:[],standardGridBlocks:[]}
+    this.state={grids:[],standardGridBlocks:[]}
     this.gridIndexArray= [[],[]];
     
   }
   addToGrid(col, row){
-    this.grids.push([col,row])
+    let arr = this.state.grids.slice();
+    arr.push([[col[0][0]+"/"+col[1][0]],[row[0][0]+"/"+row[1][0]]])
+    console.log(arr)
+    this.setState({grids:arr})
+  }
+  removeFromGrid(arr){
+    console.log(arr)
+    //let arr = this.state.standardGridBlocks.slice();
+    //arr.splice(0,1)
+    //arr.splice(4,1)
+    //this.setState({standardGridBlocks:arr})
   }
   onGridClick(index){
     index++
@@ -20,34 +28,36 @@ class App extends Component {
       this.gridIndexArray[0][0] = index
     }else if(!this.gridIndexArray[1][0] && this.gridIndexArray[0][0] !== index){
       this.gridIndexArray[1][0] = index
+
       let col =  [[this.gridIndexArray[0][0]%4],[this.gridIndexArray[1][0]%4]] 
       if(col[0][0] === 0){col[0][0] = 4}
       if(col[1][0] === 0){col[1][0] = 4}
+      col[0][0] >col[1][0] ? col[0][0]++ : col[1][0]++
       console.log(col)
 
-      let row = [[Math.floor(this.gridIndexArray[0][0]/2)],[Math.floor(this.gridIndexArray[1][0]/2)]]
+      let row = [[Math.floor((this.gridIndexArray[0][0]-1)/4)+1],
+                 [Math.floor((this.gridIndexArray[1][0]-1)/4)+1]]
+      row[0][0] > row[1][0] ? row[0][0]++ : row[1][0]++
       console.log(row)
+      this.addToGrid(col,row)
+      this.removeFromGrid(this.gridIndexArray)
       this.gridIndexArray = [[],[]]
     }
-    // %4 for column
-    // /4 Math.floor for row
-    // delet standard gridblocks from array?
   }
   componentWillMount(){
     var arr = []
     for (var i = 0; i < 100; i++) {
       arr.push(<StandardGridBlock key={i} index={i} 
-        addToGrid={this.addToGrid.bind(this)}
         onClick={this.onGridClick.bind(this)}/>)
     }
     this.setState({standardGridBlocks:arr})
   }
   render() {
     let createdGrids = [];
-    this.grids.map((val,i) => createdGrids.push(
+    this.state.grids.map((val,i) => createdGrids.push(
       <CreatedGridBlock 
         key={i} col={val[0]} row={val[1]}
-        addToGrid={this.addToGrid.bind(this)} onClick={this.onGridClick.bind(this)}
+        onClick={this.onGridClick.bind(this)}
       />))
     return (
       <div className="container">
