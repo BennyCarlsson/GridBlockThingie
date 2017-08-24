@@ -11,19 +11,30 @@ class App extends Component {
   addToGrid(col, row){
     let arr = this.state.grids.slice();
     arr.push([[col[0][0]+"/"+col[1][0]],[row[0][0]+"/"+row[1][0]]])
-    console.log(arr)
-    this.setState({grids:arr})
+    this.setState({grids:arr})  
   }
   removeFromGrid(arr){
-    console.log(arr)
-    //let arr = this.state.standardGridBlocks.slice();
-    //arr.splice(0,1)
-    //arr.splice(4,1)
-    //this.setState({standardGridBlocks:arr})
+    let low = arr[0][0] < arr[1][0] ? arr[0][0]-1 : arr[1][0]-1
+    let high = arr[0][0] > arr[1][0] ? arr[0][0]-1 : arr[1][0]-1
+    let col = ((high-(low+4))%4)
+    let row = Math.floor((high-low+4)/4)
+    console.log("col "+col+" row: "+row)
+    
+    let array = this.state.standardGridBlocks.slice();
+    array.splice(2,-2)
+    //for each row
+    for( i = 0; i < row; i++){
+      //for each col
+      for(y=0;y<col;y++){    
+        //remove colums
+        // +/- ?
+      }
+      col+4
+    }
+    this.setState({standardGridBlocks:array})
   }
   onGridClick(index){
     index++
-    console.log(index)
     if(!this.gridIndexArray[0][0]){
       this.gridIndexArray[0][0] = index
     }else if(!this.gridIndexArray[1][0] && this.gridIndexArray[0][0] !== index){
@@ -33,12 +44,10 @@ class App extends Component {
       if(col[0][0] === 0){col[0][0] = 4}
       if(col[1][0] === 0){col[1][0] = 4}
       col[0][0] >col[1][0] ? col[0][0]++ : col[1][0]++
-      console.log(col)
 
       let row = [[Math.floor((this.gridIndexArray[0][0]-1)/4)+1],
                  [Math.floor((this.gridIndexArray[1][0]-1)/4)+1]]
       row[0][0] > row[1][0] ? row[0][0]++ : row[1][0]++
-      console.log(row)
       this.addToGrid(col,row)
       this.removeFromGrid(this.gridIndexArray)
       this.gridIndexArray = [[],[]]
@@ -81,7 +90,9 @@ class CreatedGridBlock extends Component{
 class StandardGridBlock extends Component{
   render(){
     return(
-      <div className={"gridBlock standardGridBlock item"+this.props.index} onClick={() => this.props.onClick(this.props.index)}></div>
+      <div className={"gridBlock standardGridBlock item"+this.props.index} onClick={() => this.props.onClick(this.props.index)}>
+        {this.props.index}
+        </div>
     )
   }
 }
