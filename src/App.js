@@ -15,10 +15,14 @@ class App extends Component {
     this.setState({grids:arr})  
   }
   removeFromGrid(matrix){
+    console.log("row1 "+matrix[0][0][0][0])
     let row1 = matrix[0][0][0][0]
+    console.log("row2 "+matrix[0][0][1][0])
     let row2 = matrix[0][0][1][0]
 
+    console.log("col1 "+matrix[1][0][0][0])
     let col1 = matrix[1][0][0][0]
+    console.log("col2 "+matrix[1][0][1][0])
     let col2 = matrix[1][0][1][0]
 
     let array = this.state.standardGridBlocks.slice()
