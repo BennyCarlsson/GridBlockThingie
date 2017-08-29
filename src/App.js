@@ -6,6 +6,7 @@ class App extends Component {
     super(props)
     this.state={grids:[],standardGridBlocks:[]}
     this.gridIndexArray= [[],[]];
+    this.gridMatrix=[[],[]]
     
   }
   addToGrid(col, row){
@@ -13,32 +14,55 @@ class App extends Component {
     arr.push([[col[0][0]+"/"+col[1][0]],[row[0][0]+"/"+row[1][0]]])
     this.setState({grids:arr})  
   }
-  removeFromGrid(arr){
-    let low = arr[0][0] < arr[1][0] ? arr[0][0]-1 : arr[1][0]-1
+  removeFromGrid(matrix){
+    let row1 = matrix[0][0][0][0]
+    let row2 = matrix[0][0][1][0]
+
+    let col1 = matrix[1][0][0][0]
+    let col2 = matrix[1][0][1][0]
+
+    let array = this.state.standardGridBlocks.slice()
+    for(let i = row1;i <= col1;i++){
+      for(let y = row2;y <= col2;y++){
+        let index = (i*4)+y
+        console.log(index)
+        array.splice(index,1,"")
+      }
+    }
+     this.setState({standardGridBlocks:array})
+    
+
+
+    /*let low = arr[0][0] < arr[1][0] ? arr[0][0]-1 : arr[1][0]-1
     let high = arr[0][0] > arr[1][0] ? arr[0][0]-1 : arr[1][0]-1
     let col = ((high-(low+4))%4)
-    let row = Math.floor((high-low+4)/4)
-    console.log("col "+col+" row: "+row)
+    let row = Math.floor((high-(low+4))/4)
+    //console.log("col "+col+" row: "+row)
+    console.log("col: "+col)
     
-    let array = this.state.standardGridBlocks.slice();
-    array.splice(2,-2)
+    //let array = this.state.standardGridBlocks.slice();
+    //array.splice(2,-2)
     //for each row
-    for( i = 0; i < row; i++){
+    for(let i = 0; i < row; i++){
       //for each col
-      for(y=0;y<col;y++){    
+      for(let y = 0; y < col; y++){ //-?    
         //remove colums
         // +/- ?
       }
-      col+4
+      //col+4
     }
-    this.setState({standardGridBlocks:array})
+    //this.setState({standardGridBlocks:array})
+  */
   }
-  onGridClick(index){
+  
+  onGridClick(index,matrix){
     index++
     if(!this.gridIndexArray[0][0]){
       this.gridIndexArray[0][0] = index
+      this.gridMatrix[0][0] = matrix
     }else if(!this.gridIndexArray[1][0] && this.gridIndexArray[0][0] !== index){
       this.gridIndexArray[1][0] = index
+      this.gridMatrix[1][0] = matrix
 
       let col =  [[this.gridIndexArray[0][0]%4],[this.gridIndexArray[1][0]%4]] 
       if(col[0][0] === 0){col[0][0] = 4}
@@ -49,15 +73,19 @@ class App extends Component {
                  [Math.floor((this.gridIndexArray[1][0]-1)/4)+1]]
       row[0][0] > row[1][0] ? row[0][0]++ : row[1][0]++
       this.addToGrid(col,row)
-      this.removeFromGrid(this.gridIndexArray)
+      this.removeFromGrid(this.gridMatrix)
       this.gridIndexArray = [[],[]]
     }
   }
-  componentWillMount(){
+  componentWillMount(){ 
     var arr = []
-    for (var i = 0; i < 100; i++) {
-      arr.push(<StandardGridBlock key={i} index={i} 
-        onClick={this.onGridClick.bind(this)}/>)
+    let count = 0;
+    for (let i = 0; i < 4; i++) {
+      for(let y = 0; y < 4; y++){
+        arr.push(<StandardGridBlock key={"i"+i+y} index={count} matrix={[[i],[y]]} 
+          onClick={this.onGridClick.bind(this)}/>)
+          count++
+      }
     }
     this.setState({standardGridBlocks:arr})
   }
@@ -90,8 +118,11 @@ class CreatedGridBlock extends Component{
 class StandardGridBlock extends Component{
   render(){
     return(
-      <div className={"gridBlock standardGridBlock item"+this.props.index} onClick={() => this.props.onClick(this.props.index)}>
+      <div className={"gridBlock standardGridBlock item"+this.props.index}
+        onClick={() => this.props.onClick(this.props.index, this.props.matrix)}>
         {this.props.index}
+        ,
+        {this.props.matrix}
         </div>
     )
   }
