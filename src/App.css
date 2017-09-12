@@ -10,7 +10,19 @@
 .standardGridBlock{
   
 }
+.mobileOnly{
+  display: none;
+}
+.desktopOnly{
+  display: block;
+}
 @media only screen and (max-width:767px){
+  .desktopOnly{
+    display: none;
+  }
+  .mobileOnly{
+    display: block;
+  }
   .container{
     display: grid;
     grid-template-columns: repeat(2, 150px);
