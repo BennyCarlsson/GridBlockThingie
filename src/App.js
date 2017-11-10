@@ -3,12 +3,17 @@ import "./App.css"
 
 const rowdDivideNumber = 4
 const rowdDivideNumberMobile = 2
+const device = {
+  desktop: "desktop",
+  mobile: "mobile"
+}
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
       grids: [],
+      gridsMobile: [],
       standardGridBlocks: [],
       standardGridBlocksMobile: []
     }
@@ -16,13 +21,20 @@ class App extends Component {
     this.gridMatrix = [[], []]
   }
 
-  addToGrid(col, row) {
-    let arr = this.state.grids.slice()
+  addToGrid(col, row, currentDevice) {
+    let arr =
+      currentDevice === device.desktop
+        ? this.state.grids.slice()
+        : this.state.gridsMobile.slice()
+
     arr.push([[col[0][0] + "/" + col[1][0]], [row[0][0] + "/" + row[1][0]]])
-    this.setState({ grids: arr })
+
+    currentDevice === device.desktop
+      ? this.setState({ grids: arr })
+      : this.setState({ gridsMobile: arr })
   }
 
-  removeFromGrid(matrix) {
+  removeFromGrid(matrix, currentDevice) {
     let row1 =
       matrix[0][0][0][0] <= matrix[1][0][0][0]
         ? matrix[0][0][0][0]
@@ -41,21 +53,32 @@ class App extends Component {
         ? matrix[1][0][1][0]
         : matrix[0][0][1][0]
 
+    //could be refactored
     let array = this.state.standardGridBlocks.slice()
     let mArray = this.state.standardGridBlocksMobile.slice()
+
     for (let i = row1; i <= col1; i++) {
       for (let y = row2; y <= col2; y++) {
-        let index = i * rowdDivideNumber + y
-        array.splice(index, 1, "")
-        let mIndex = i * rowdDivideNumberMobile + y
-        mArray.splice(mIndex, 1, "")
+        if (currentDevice === device.desktop) {
+          let index = i * rowdDivideNumber + y
+          array.splice(index, 1, "")
+        }
+        if (currentDevice === device.mobile) {
+          let mIndex = i * rowdDivideNumberMobile + y
+          mArray.splice(mIndex, 1, "")
+        }
       }
     }
-    this.setState({ standardGridBlocks: array })
-    this.setState({ standardGridBlocksMobile: mArray })
+
+    if (currentDevice === device.desktop) {
+      this.setState({ standardGridBlocks: array })
+    }
+    if (currentDevice === device.mobile) {
+      this.setState({ standardGridBlocksMobile: mArray })
+    }
   }
 
-  onGridClick(index, matrix, divide) {
+  onGridClick(index, matrix, divide, currentDevice) {
     index++
     if (!this.gridIndexArray[0][0]) {
       this.gridIndexArray[0][0] = index
@@ -84,8 +107,8 @@ class App extends Component {
         [Math.floor((this.gridIndexArray[1][0] - 1) / divide) + 1]
       ]
       row[0][0] > row[1][0] ? row[0][0]++ : row[1][0]++
-      this.addToGrid(col, row)
-      this.removeFromGrid(this.gridMatrix)
+      this.addToGrid(col, row, currentDevice)
+      this.removeFromGrid(this.gridMatrix, currentDevice)
       this.gridIndexArray = [[], []]
     }
   }
@@ -128,7 +151,19 @@ class App extends Component {
     this.state.grids.map((val, i) =>
       createdGrids.push(
         <CreatedGridBlock
-          key={i}
+          className={"desktopOnly"}
+          key={i + "d"}
+          col={val[0]}
+          row={val[1]}
+          onClick={this.onGridClick.bind(this)}
+        />
+      )
+    )
+    this.state.gridsMobile.map((val, i) =>
+      createdGrids.push(
+        <CreatedGridBlock
+          className={"mobileOnly"}
+          key={i + "m"}
           col={val[0]}
           row={val[1]}
           onClick={this.onGridClick.bind(this)}
@@ -148,7 +183,7 @@ class App extends Component {
 const CreatedGridBlock = props => {
   return (
     <div
-      className={"gridBlock"}
+      className={"gridBlock " + props.className}
       style={{ gridColumn: props.col, gridRow: props.row }}
     />
   )
@@ -158,7 +193,13 @@ const StandardGridBlock = props => {
   return (
     <div
       className={"gridBlock standardGridBlock desktopOnly item" + props.index}
-      onClick={() => props.onClick(props.index, props.matrix, rowdDivideNumber)}
+      onClick={() =>
+        props.onClick(
+          props.index,
+          props.matrix,
+          rowdDivideNumber,
+          device.desktop
+        )}
     >
       {props.matrix}
     </div>
@@ -170,7 +211,12 @@ const StandardGridBlockMobile = props => {
     <div
       className={"gridBlock standardGridBlock mobileOnly item" + props.index}
       onClick={() =>
-        props.onClick(props.index, props.matrix, rowdDivideNumberMobile)}
+        props.onClick(
+          props.index,
+          props.matrix,
+          rowdDivideNumberMobile,
+          device.mobile
+        )}
     >
       {props.matrix}
     </div>
