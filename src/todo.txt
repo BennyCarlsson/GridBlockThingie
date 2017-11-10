@@ -2,4 +2,5 @@ Mobile version fix CreatedGridBlock that works for both mobile and desktop
 Cat picture
 Live on github
 Style
+Mark the square you clicked
 Instructions
