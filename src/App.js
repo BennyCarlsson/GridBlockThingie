@@ -83,6 +83,9 @@ class App extends Component {
     if (!this.gridIndexArray[0][0]) {
       this.gridIndexArray[0][0] = index
       this.gridMatrix[0][0] = matrix
+    } else if (this.gridIndexArray[0][0] === index) {
+      this.gridIndexArray[0][0] = null
+      this.gridMatrix[0][0] = null
     } else if (
       !this.gridIndexArray[1][0] &&
       this.gridIndexArray[0][0] !== index
@@ -189,37 +192,65 @@ const CreatedGridBlock = props => {
   )
 }
 
-const StandardGridBlock = props => {
-  return (
-    <div
-      className={"gridBlock standardGridBlock desktopOnly item" + props.index}
-      onClick={() =>
-        props.onClick(
-          props.index,
-          props.matrix,
-          rowdDivideNumber,
-          device.desktop
-        )}
-    >
-      {props.matrix}
-    </div>
-  )
+class StandardGridBlock extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      clickFocus: false
+    }
+  }
+  render() {
+    return (
+      <div
+        className={
+          "gridBlock standardGridBlock desktopOnly item" +
+          this.props.index +
+          (this.state.clickFocus ? " clickFocus" : "")
+        }
+        onClick={() => {
+          this.props.onClick(
+            this.props.index,
+            this.props.matrix,
+            rowdDivideNumber,
+            device.desktop
+          )
+          this.setState({ clickFocus: !this.state.clickFocus })
+        }}
+      >
+        {this.props.matrix}
+      </div>
+    )
+  }
 }
 
-const StandardGridBlockMobile = props => {
-  return (
-    <div
-      className={"gridBlock standardGridBlock mobileOnly item" + props.index}
-      onClick={() =>
-        props.onClick(
-          props.index,
-          props.matrix,
-          rowdDivideNumberMobile,
-          device.mobile
-        )}
-    >
-      {props.matrix}
-    </div>
-  )
+class StandardGridBlockMobile extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      clickFocus: false
+    }
+  }
+  render() {
+    return (
+      <div
+        className={
+          "gridBlock standardGridBlock mobileOnly item" +
+          this.props.index +
+          (this.state.clickFocus ? " clickFocus" : "")
+        }
+        onClick={() => {
+          this.props.onClick(
+            this.props.index,
+            this.props.matrix,
+            rowdDivideNumberMobile,
+            device.mobile
+          )
+          this.setState({ clickFocus: !this.state.clickFocus })
+        }}
+      >
+        {this.props.matrix}
+      </div>
+    )
+  }
 }
 export default App
