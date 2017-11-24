@@ -1,5 +1,5 @@
-Cat picture
+Refresh button 
 Style
 Live on github
-Instructions
+Instructions    
 Readme

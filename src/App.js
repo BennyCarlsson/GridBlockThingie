@@ -187,7 +187,11 @@ const CreatedGridBlock = props => {
   return (
     <div
       className={"gridBlock " + props.className}
-      style={{ gridColumn: props.col, gridRow: props.row }}
+      style={{
+        gridColumn: props.col,
+        gridRow: props.row,
+        backgroundColor: "blue"
+      }}
     />
   )
 }
@@ -216,9 +220,7 @@ class StandardGridBlock extends Component {
           )
           this.setState({ clickFocus: !this.state.clickFocus })
         }}
-      >
-        {this.props.matrix}
-      </div>
+      />
     )
   }
 }
@@ -247,9 +249,7 @@ class StandardGridBlockMobile extends Component {
           )
           this.setState({ clickFocus: !this.state.clickFocus })
         }}
-      >
-        {this.props.matrix}
-      </div>
+      />
     )
   }
 }
