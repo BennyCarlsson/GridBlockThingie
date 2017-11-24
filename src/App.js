@@ -15,7 +15,9 @@ class App extends Component {
       grids: [],
       gridsMobile: [],
       standardGridBlocks: [],
-      standardGridBlocksMobile: []
+      standardGridBlocksMobile: [],
+      colorArr: [],
+      colorArrMobile: []
     }
     this.gridIndexArray = [[], []]
     this.gridMatrix = [[], []]
@@ -32,8 +34,21 @@ class App extends Component {
     currentDevice === device.desktop
       ? this.setState({ grids: arr })
       : this.setState({ gridsMobile: arr })
-  }
 
+    this.addColor(currentDevice)
+  }
+  addColor(currentDevice) {
+    let arr =
+      currentDevice === device.desktop
+        ? this.state.colorArr.slice()
+        : this.state.colorArrMobile.slice()
+
+    arr.push(getRandomColor())
+
+    currentDevice === device.desktop
+      ? this.setState({ colorArr: arr })
+      : this.setState({ colorArrMobile: arr })
+  }
   removeFromGrid(matrix, currentDevice) {
     let row1 =
       matrix[0][0][0][0] <= matrix[1][0][0][0]
@@ -159,6 +174,7 @@ class App extends Component {
           col={val[0]}
           row={val[1]}
           onClick={this.onGridClick.bind(this)}
+          randomColor={this.state.colorArr[i]}
         />
       )
     )
@@ -170,6 +186,7 @@ class App extends Component {
           col={val[0]}
           row={val[1]}
           onClick={this.onGridClick.bind(this)}
+          randomColor={this.state.colorArrMobile[i]}
         />
       )
     )
@@ -190,7 +207,7 @@ const CreatedGridBlock = props => {
       style={{
         gridColumn: props.col,
         gridRow: props.row,
-        backgroundColor: "blue"
+        backgroundColor: props.randomColor
       }}
     />
   )
@@ -253,4 +270,26 @@ class StandardGridBlockMobile extends Component {
     )
   }
 }
+
+const colors = [
+  "#EF5350",
+  "#EC407A",
+  "#AB47BC",
+  "#7E57C2",
+  "#5C6BC0",
+  "#42A5F5",
+  "#29B6F6",
+  "#26C6DA",
+  "#26A69A",
+  "#66BB6A",
+  "#9CCC65",
+  "#D4E157",
+  "#FFEE58",
+  "#FFCA28",
+  "#FFA726",
+  "#FF7043",
+  "#8D6E63"
+]
+const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)]
+
 export default App
