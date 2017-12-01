@@ -1,5 +1,3 @@
-Refresh button 
-Style
 Live on github
 Instructions    
 Readme
